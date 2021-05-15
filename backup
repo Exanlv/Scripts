@@ -1,0 +1,37 @@
+#!/bin/python3
+
+import os
+from datetime import date
+
+home = os.environ['HOME']
+config_dir = home + '/.config/exan'
+mount_dir = '/tmp/backup_sftp'
+
+f = open(config_dir + '/backup')
+
+# Get list of dirs to be backed up, exclude empty lines
+dirs = list(filter(lambda dir: dir != '', f.read().split('\n')))
+
+def full_path(dir):
+    return home + '/' + dir;
+
+dirs = list(map(full_path, dirs))
+
+backup_file = str(date.today()) + '.tar.gz'
+
+# Create unencrypted backup
+os.system('tar -czvf ' + backup_file + ' ' + ' '.join(dirs))
+
+# Create encrypted copy of file
+os.system('gpg -c --cipher-algo AES256 --no-symkey-cache ' + backup_file)
+print('Encrypting done, now uploading encrypted backup')
+
+# Mount external storage
+os.system('mkdir -p ' + mount_dir)
+os.system('cat ' + config_dir + '/stack_password | sshfs exan@exan@exan.stackstorage.com:/ ' + mount_dir + ' -o password_stdin');
+os.system('mv ' + backup_file + '.gpg ' + mount_dir + '/exan')
+
+# Unmount external storage
+os.system('fusermount -u ' + mount_dir)
+
+print('System backup done');
