@@ -1,0 +1,29 @@
+#!/usr/bin/python3
+
+import glob
+import os
+
+i = 1
+
+pngImages = list(glob.glob('*.png'))
+jpgImages = list(glob.glob('*.jpg'))
+
+allImages = pngImages + jpgImages
+
+allImages.sort()
+
+indexLength = len(str(len(allImages)))
+
+for i, filename in enumerate(allImages, start=1):
+    newFilename = str(i)
+    while len(newFilename) < indexLength:
+        newFilename = '0' + newFilename
+    
+    fileExtension = filename[-4:]
+
+    newLocation = newFilename + fileExtension
+
+    if newLocation != filename:
+        os.system('mv "' + filename + '" "' + newLocation + '"')
+
+print('Ordered ' + str(len(allImages)) + ' image(s)')
