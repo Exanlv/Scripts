@@ -1,0 +1,22 @@
+#!/bin/python3
+
+import sys
+import re
+
+filenames = sys.argv[1:]
+
+pattern = re.compile('([a-z]+)') 
+
+for filename in filenames:
+    with open(filename) as f:
+        content = f.readlines()
+
+    for line in content:
+        technical_name = line.strip()
+        technical_words = pattern.findall(technical_name)
+        friendly_words = []
+
+        for word in technical_words:
+            friendly_words.append(word[0].upper() + word[1:].lower())
+
+        print(' '.join(friendly_words))
