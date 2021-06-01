@@ -1,0 +1,17 @@
+#!/bin/python3
+
+import sys
+import re
+import os
+
+overlay = sys.argv[1]
+
+source_images = sys.argv[2:]
+
+print(source_images)
+
+pattern = re.compile('(.*)\.(.*)')
+
+for image in source_images:
+    fileName = pattern.findall(image)[0]
+    os.system('convert ' + image + ' ' + overlay + ' -compose blend -composite ' + fileName[0] + '_color.' + fileName[1])
