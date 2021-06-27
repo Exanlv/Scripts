@@ -1,0 +1,44 @@
+#!/bin/python3
+
+import sys
+
+top_amount = int(sys.argv[1]) if len(sys.argv) > 1 else 10
+
+dictionary = {}
+
+for line in sys.stdin:
+    for word in line.rstrip().split(" "):
+        if word == "":
+            continue
+
+        if word not in dictionary:
+            dictionary[word.rstrip()] = 1
+        else:
+            dictionary[word.rstrip()] += 1
+
+top_list = [];
+
+for word in dictionary:
+    if len(top_list) == 0:
+        top_list.append(word)
+        continue
+
+    inserted = False
+    for i in range(len(top_list)):
+        if (dictionary[word] > dictionary[top_list[i]]):
+            top_list.insert(i, word)
+            inserted = True
+            break
+
+    if inserted:
+        continue
+
+    top_list_length = len(top_list)
+    if  top_list_length > top_amount:
+        del top_list[-1]
+    elif top_list_length < top_amount:
+        top_list.append(word)
+
+for i in range(len(top_list)):
+    word = top_list[i]
+    print(i, "'" + word + "'", dictionary[word])
